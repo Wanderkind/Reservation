@@ -1,3 +1,7 @@
+// Simulated admin data for authentication
+const adminUsername = "admin";
+const adminPassword = "adminpass";
+
 // Simulated user data for authentication
 const users = [
     { username: "user1", password: "pass1" },
@@ -53,4 +57,45 @@ function bookOption(option) {
             alert(`Option ${option} booked successfully`);
         }
     }
+}
+
+const adminButton = document.createElement("button");
+adminButton.textContent = "Admin: Reset Reservations";
+adminButton.addEventListener("click", resetReservations);
+optionsContainer.appendChild(adminButton);
+
+// Function to authenticate admin
+function authenticateAdmin() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    if (username === adminUsername && password === adminPassword) {
+        document.getElementById("login-container").style.display = "none";
+        document.getElementById("options-container").style.display = "block";
+        displayOptions();
+
+        // Display admin features
+        const adminFeatures = document.createElement("div");
+        adminFeatures.innerHTML = `
+            <h2>Admin Features</h2>
+            <button onclick="resetReservations()">Reset Reservations</button>
+            <button onclick="viewReservations()">View Reservations</button>
+        `;
+        document.getElementById("options-container").appendChild(adminFeatures);
+    } else {
+        alert("Invalid username or password");
+    }
+}
+
+function resetReservations() {
+    if (confirm("Are you sure you want to reset all reservations?")) {
+        bookedOptions.clear();
+        alert("Reservations reset successfully");
+        // Refresh the page to reflect the changes
+        location.reload();
+    }
+}
+
+function viewReservations() {
+    alert(`Booked Options: ${Array.from(bookedOptions).join(", ")}`);
 }
