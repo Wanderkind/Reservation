@@ -1,95 +1,79 @@
-// Simulated admin data for authentication
-const adminUsername = "admin";
-const adminPassword = "adminpass";
+// Dummy admin credentials
+const adminCredentials = {
+    username: "admin",
+    password: "admin123"
+};
 
-// Simulated user data for authentication
-const users = [
-    { username: "user1", password: "pass1" },
-    { username: "user2", password: "pass2" },
-    // Add more users as needed
-];
+// Dummy reservation data
+let reservations = {};
 
-// Simulated booked options
-const bookedOptions = new Set();
+// Dummy options
+const options = Array.from({ length: 60 }, (_, i) => i + 1);
 
-// Function to authenticate user
-function authenticate() {
+// Check if the user is an admin
+function isAdmin(username, password) {
+    return username === adminCredentials.username && password === adminCredentials.password;
+}
+
+// Login function
+function login() {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
-    // Check if the credentials match an admin
-    if (username === adminUsername && password === adminPassword) {
-        document.getElementById("login-container").style.display = "none";
-        document.getElementById("options-container").style.display = "block";
-        displayOptions();
-
-        // Display admin features
-        const adminFeatures = document.createElement("div");
-        adminFeatures.innerHTML = `
-            <h2>Admin Features</h2>
-            <button onclick="resetReservations()">Reset Reservations</button>
-            <button onclick="viewReservations()">View Reservations</button>
-        `;
-        document.getElementById("options-container").appendChild(adminFeatures);
+    if (isAdmin(username, password)) {
+        // Display reservation options for admin
+        showAdminView();
     } else {
-        // Check if the credentials match a regular user
-        const user = users.find(u => u.username === username && u.password === password);
-
-        if (user) {
-            document.getElementById("login-container").style.display = "none";
-            document.getElementById("options-container").style.display = "block";
-            displayOptions();
-        } else {
-            alert("Invalid username or password");
-        }
+        // Display reservation options for regular user
+        showUserView();
     }
 }
 
-// Function to display options
-function displayOptions() {
-    const optionsContainer = document.getElementById("options");
+// Display reservation options for admin
+function showAdminView() {
+    // Logic for admin view (not implemented in this example)
+}
 
-    for (let i = 1; i <= 60; i++) {
-        const optionButton = document.createElement("button");
-        optionButton.textContent = i;
+// Display reservation options for regular user
+function showUserView() {
+    document.getElementById("login-container").style.display = "none";
+    document.getElementById("reservation-container").style.display = "block";
 
-        // Check if the option is already booked
-        if (bookedOptions.has(i)) {
-            optionButton.disabled = true;
-        } else {
-            optionButton.addEventListener("click", () => bookOption(i));
-        }
+    // Populate options dropdown
+    const optionsList = document.getElementById("options-list");
+    optionsList.innerHTML = "";
+    options.forEach(option => {
+        const optionElem = document.createElement("option");
+        optionElem.value = option;
+        optionElem.innerText = `Option ${option}`;
+        optionsList.appendChild(optionElem);
+    });
+}
 
-        optionsContainer.appendChild(optionButton);
+// Reserve option function
+function reserveOption() {
+    const selectedOption = document.getElementById("options-list").value;
+
+    // Check if the option is already booked
+    if (reservations[selectedOption]) {
+        document.getElementById("status-message").innerText = "Option already booked";
+    } else {
+        // Book the option
+        reservations[selectedOption] = true;
+        document.getElementById("status-message").innerText = "Option booked successfully";
     }
 }
 
-// Function to book an option
-function bookOption(option) {
-    if (confirm(`Do you want to book option ${option}?`)) {
-        if (bookedOptions.has(option)) {
-            alert("Option already booked by another user");
-        } else {
-            bookedOptions.add(option);
-            alert(`Option ${option} booked successfully`);
-        }
+// Cancel reservation function
+function cancelReservation() {
+    const selectedOption = document.getElementById("options-list").value;
+
+    // Check if the option is booked
+    if (reservations[selectedOption]) {
+        // Cancel the reservation
+        delete reservations[selectedOption];
+        document.getElementById("status-message").innerText = "Reservation canceled";
+    } else {
+        document.getElementById("status-message").innerText = "No reservation to cancel";
     }
-}
-
-const adminButton = document.createElement("button");
-adminButton.textContent = "Admin: Reset Reservations";
-adminButton.addEventListener("click", resetReservations);
-optionsContainer.appendChild(adminButton);
-
-function resetReservations() {
-    if (confirm("Are you sure you want to reset all reservations?")) {
-        bookedOptions.clear();
-        alert("Reservations reset successfully");
-        // Refresh the page to reflect the changes
-        location.reload();
-    }
-}
-
-function viewReservations() {
-    alert(`Booked Options: ${Array.from(bookedOptions).join(", ")}`);
 }

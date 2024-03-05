@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reservation System</title>
     <link rel="stylesheet" href="styles.css">
+    <title>Reservation System</title>
 </head>
 <body>
     <div id="login-container">
@@ -14,13 +14,16 @@
             <input type="text" id="username" required>
             <label for="password">Password:</label>
             <input type="password" id="password" required>
-            <button type="button" onclick="authenticate()">Login</button>
+            <button type="button" onclick="login()">Login</button>
         </form>
     </div>
 
-    <div id="options-container" style="display:none;">
-        <h2>Choose an Option (1-60)</h2>
-        <div id="options"></div>
+    <div id="reservation-container" style="display:none;">
+        <h2>Reservation</h2>
+        <p id="status-message"></p>
+        <select id="options-list"></select>
+        <button onclick="reserveOption()">Reserve</button>
+        <button onclick="cancelReservation()">Cancel Reservation</button>
     </div>
 
     <script src="script.js"></script>
